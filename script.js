@@ -7,6 +7,9 @@ const puntajeEl = document.getElementById("puntaje");
 const menu = document.getElementById("menu");
 const pantallaJuego = document.getElementById("pantallaJuego");
 const botonJugar = document.getElementById("botonJugar");
+const botonSkins = document.getElementById("botonSkins");
+const botonTienda = document.getElementById("botonTienda");
+const botonNiveles = document.getElementById("botonNiveles");
 
 // Referencias a los botones táctiles de dirección
 const btnArriba = document.getElementById("btnArriba");
@@ -217,6 +220,11 @@ botonJugar.addEventListener("click", () => {
   canvas.focus();
   bucleDelJuego();
 });
+
+// Todavía sin funcionalidad, se van a activar cuando armemos cada sección
+botonSkins.addEventListener("click", () => alert("Skins: muy pronto vas a poder elegir el look de tu serpiente."));
+botonTienda.addEventListener("click", () => alert("Tienda: acá vas a poder gastar tus monedas en skins."));
+botonNiveles.addEventListener("click", () => alert("Niveles: acá vas a poder elegir la dificultad."));
 
 // Reiniciar: vuelve a arrancar el juego sin salir de la pantalla de juego
 botonReiniciar.addEventListener("click", () => {

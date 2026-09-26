@@ -45,6 +45,29 @@ h1 {
   background-color: #3d8b40;
 }
 
+/* Botones secundarios del menú, todavía sin funcionalidad (se activan más adelante) */
+#menuSecundario {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.botonSecundario {
+  background-color: #333333;
+  color: #cccccc;
+  border: 2px solid #555555;
+  padding: 8px 16px;
+  font-size: 14px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.botonSecundario:hover {
+  border-color: #4caf50;
+  color: #ffffff;
+}
+
 canvas {
   background-color: #000000;
   border: 4px solid #4caf50;
