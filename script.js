@@ -19,6 +19,12 @@ const pantallaGameOver = document.getElementById("pantallaGameOver");
 const puntajeFinalEl = document.getElementById("puntajeFinal");
 const botonReiniciar = document.getElementById("botonReiniciar");
 const botonMenu = document.getElementById("botonMenu");
+const mensajeFin = document.getElementById("mensajeFin");
+const recordMenuEl = document.getElementById("recordMenu");
+const recordFinalEl = document.getElementById("recordFinal");
+const recordJuegoEl = document.getElementById("recordJuego");
+const avisoNuevoRecord = document.getElementById("avisoNuevoRecord");
+const lineaPuntajeFinal = document.getElementById("lineaPuntajeFinal");
 
 const tamCelda = 20; // tamaño de cada cuadradito del tablero
 const columnas = canvas.width / tamCelda;
@@ -26,19 +32,40 @@ const filas = canvas.height / tamCelda;
 
 let serpiente;
 let direccion;
+let direccionSiguiente;
 let comida;
 let puntaje;
 let velocidad = 150; // milisegundos entre movimientos
 let juegoTerminado;
 
+// El récord se guarda en el propio navegador, no requiere servidor ni login
+let record = Number(localStorage.getItem("recordSnake")) || 0;
+recordMenuEl.textContent = record;
+
+// Compara el puntaje actual contra el récord guardado y lo actualiza si lo supera.
+// Devuelve true si se batió el récord, para poder mostrar el aviso correspondiente.
+function actualizarRecordSiCorresponde() {
+  const esNuevoRecord = puntaje > record;
+  if (esNuevoRecord) {
+    record = puntaje;
+    localStorage.setItem("recordSnake", record);
+  }
+  recordMenuEl.textContent = record;
+  recordJuegoEl.textContent = record;
+  recordFinalEl.textContent = record;
+  return esNuevoRecord;
+}
+
 // Deja todo el estado del juego como al arrancar (se usa al jugar y al reiniciar)
 function iniciarEstadoDelJuego() {
   serpiente = [{ x: 10, y: 10 }]; // empieza con un solo segmento
-  direccion = { x: 0, y: 0 }; // quieta hasta que apretes una tecla
+  direccion = { x: 0, y: 0 }; // dirección con la que se movió la última vez
+  direccionSiguiente = { x: 0, y: 0 }; // dirección pedida, se aplica en el próximo movimiento
   comida = generarComida();
   puntaje = 0;
   juegoTerminado = false;
   puntajeEl.textContent = puntaje;
+  recordJuegoEl.textContent = record;
 }
 
 // Genera una posición aleatoria para la comida
@@ -49,11 +76,13 @@ function generarComida() {
   };
 }
 
-// Cambia la dirección, evitando que la serpiente se choque contra sí misma
-// al girar 180 grados de golpe (por ejemplo ir para la derecha y tocar izquierda)
+// Guarda la dirección pedida, comparando siempre contra la última dirección
+// realmente aplicada (no contra otro pedido que ya esté en cola). Esto evita
+// que dos teclas apretadas muy rápido, antes del próximo movimiento, terminen
+// mandando a la serpiente contra su propio cuerpo sin que se vea en pantalla.
 function cambiarDireccion(nuevaX, nuevaY) {
-  if (nuevaX !== 0 && direccion.x === 0) direccion = { x: nuevaX, y: 0 };
-  if (nuevaY !== 0 && direccion.y === 0) direccion = { x: 0, y: nuevaY };
+  if (nuevaX !== 0 && direccion.x === 0) direccionSiguiente = { x: nuevaX, y: 0 };
+  if (nuevaY !== 0 && direccion.y === 0) direccionSiguiente = { x: 0, y: nuevaY };
 }
 
 // Escucha las flechas del teclado para cambiar de dirección
@@ -82,6 +111,9 @@ btnDerecha.addEventListener("click", () => cambiarDireccion(1, 0));
 
 function actualizar() {
   if (juegoTerminado) return;
+
+  // Recién acá se "confirma" el giro pedido, una sola vez por movimiento
+  direccion = direccionSiguiente;
 
   // Si todavía no apretó ninguna tecla, no se mueve
   if (direccion.x === 0 && direccion.y === 0) return;
@@ -118,6 +150,13 @@ function actualizar() {
   if (nuevaCabeza.x === comida.x && nuevaCabeza.y === comida.y) {
     puntaje += 10;
     puntajeEl.textContent = puntaje;
+
+    // Si la serpiente ya ocupa todas las celdas, no queda lugar para más comida: ganó
+    if (serpiente.length === columnas * filas) {
+      terminarJuego(true);
+      return;
+    }
+
     comida = generarComida();
   } else {
     serpiente.pop();
@@ -150,9 +189,14 @@ function dibujar() {
   );
 }
 
-function terminarJuego() {
+function terminarJuego(gano) {
   juegoTerminado = true;
+  mensajeFin.textContent = gano ? "¡Ganaste! Llenaste todo el tablero" : "Perdiste";
   puntajeFinalEl.textContent = puntaje;
+  const esNuevoRecord = actualizarRecordSiCorresponde();
+  avisoNuevoRecord.classList.toggle("oculto", !esNuevoRecord);
+  lineaPuntajeFinal.classList.toggle("textoVerde", esNuevoRecord);
+  lineaPuntajeFinal.classList.toggle("textoRojo", !esNuevoRecord);
   pantallaGameOver.classList.remove("oculto");
 }
 

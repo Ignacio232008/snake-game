@@ -26,6 +26,11 @@ h1 {
   margin-bottom: 25px;
 }
 
+#recordMenu {
+  color: #4caf50;
+  font-weight: bold;
+}
+
 #botonJugar {
   background-color: #4caf50;
   color: #ffffff;
@@ -89,8 +94,24 @@ p {
 }
 
 #pantallaGameOver p {
-  color: #e53935;
   font-weight: bold;
+}
+
+#mensajeFin {
+  color: #e53935;
+}
+
+#avisoNuevoRecord {
+  color: #4caf50;
+}
+
+/* Colores dinámicos según si se batió el récord o no */
+.textoVerde {
+  color: #4caf50;
+}
+
+.textoRojo {
+  color: #e53935;
 }
 
 #botonReiniciar,

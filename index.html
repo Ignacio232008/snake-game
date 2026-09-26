@@ -11,13 +11,14 @@
   <div id="menu">
     <h1>Snake</h1>
     <p>Usá las flechas del teclado para moverte</p>
+    <p>Récord: <span id="recordMenu">0</span></p>
     <button id="botonJugar">Jugar</button>
   </div>
 
   <!-- Pantalla del juego, arranca oculta -->
   <div id="pantallaJuego" class="oculto">
     <canvas id="juego" width="400" height="400"></canvas>
-    <p>Puntos: <span id="puntaje">0</span></p>
+    <p>Puntos: <span id="puntaje">0</span> — Récord: <span id="recordJuego">0</span></p>
 
     <!-- Controles táctiles para jugar desde el celular -->
     <div id="controlesTactiles">
@@ -31,7 +32,9 @@
 
     <!-- Pantalla de fin de juego, arranca oculta -->
     <div id="pantallaGameOver" class="oculto">
-      <p>Perdiste - Puntaje final: <span id="puntajeFinal">0</span></p>
+      <p id="mensajeFin">Perdiste</p>
+      <p id="avisoNuevoRecord" class="oculto">¡Nuevo récord!</p>
+      <p id="lineaPuntajeFinal">Puntaje: <span id="puntajeFinal">0</span> — Récord: <span id="recordFinal">0</span></p>
       <button id="botonReiniciar">Reiniciar</button>
       <button id="botonMenu">Menú</button>
     </div>
