@@ -3,16 +3,43 @@ const canvas = document.getElementById("juego");
 const ctx = canvas.getContext("2d");
 const puntajeEl = document.getElementById("puntaje");
 
+// Referencias a las pantallas de menú y juego
+const menu = document.getElementById("menu");
+const pantallaJuego = document.getElementById("pantallaJuego");
+const botonJugar = document.getElementById("botonJugar");
+
+// Referencias a los botones táctiles de dirección
+const btnArriba = document.getElementById("btnArriba");
+const btnAbajo = document.getElementById("btnAbajo");
+const btnIzquierda = document.getElementById("btnIzquierda");
+const btnDerecha = document.getElementById("btnDerecha");
+
+// Referencias a la pantalla de fin de juego
+const pantallaGameOver = document.getElementById("pantallaGameOver");
+const puntajeFinalEl = document.getElementById("puntajeFinal");
+const botonReiniciar = document.getElementById("botonReiniciar");
+const botonMenu = document.getElementById("botonMenu");
+
 const tamCelda = 20; // tamaño de cada cuadradito del tablero
 const columnas = canvas.width / tamCelda;
 const filas = canvas.height / tamCelda;
 
-let serpiente = [{ x: 10, y: 10 }]; // empieza con un solo segmento
-let direccion = { x: 0, y: 0 }; // quieta hasta que apretes una tecla
-let comida = generarComida();
-let puntaje = 0;
+let serpiente;
+let direccion;
+let comida;
+let puntaje;
 let velocidad = 150; // milisegundos entre movimientos
-let juegoTerminado = false;
+let juegoTerminado;
+
+// Deja todo el estado del juego como al arrancar (se usa al jugar y al reiniciar)
+function iniciarEstadoDelJuego() {
+  serpiente = [{ x: 10, y: 10 }]; // empieza con un solo segmento
+  direccion = { x: 0, y: 0 }; // quieta hasta que apretes una tecla
+  comida = generarComida();
+  puntaje = 0;
+  juegoTerminado = false;
+  puntajeEl.textContent = puntaje;
+}
 
 // Genera una posición aleatoria para la comida
 function generarComida() {
@@ -22,23 +49,36 @@ function generarComida() {
   };
 }
 
+// Cambia la dirección, evitando que la serpiente se choque contra sí misma
+// al girar 180 grados de golpe (por ejemplo ir para la derecha y tocar izquierda)
+function cambiarDireccion(nuevaX, nuevaY) {
+  if (nuevaX !== 0 && direccion.x === 0) direccion = { x: nuevaX, y: 0 };
+  if (nuevaY !== 0 && direccion.y === 0) direccion = { x: 0, y: nuevaY };
+}
+
 // Escucha las flechas del teclado para cambiar de dirección
 document.addEventListener("keydown", (evento) => {
   switch (evento.key) {
     case "ArrowUp":
-      if (direccion.y === 0) direccion = { x: 0, y: -1 };
+      cambiarDireccion(0, -1);
       break;
     case "ArrowDown":
-      if (direccion.y === 0) direccion = { x: 0, y: 1 };
+      cambiarDireccion(0, 1);
       break;
     case "ArrowLeft":
-      if (direccion.x === 0) direccion = { x: -1, y: 0 };
+      cambiarDireccion(-1, 0);
       break;
     case "ArrowRight":
-      if (direccion.x === 0) direccion = { x: 1, y: 0 };
+      cambiarDireccion(1, 0);
       break;
   }
 });
+
+// Los botones táctiles usan la misma función que el teclado
+btnArriba.addEventListener("click", () => cambiarDireccion(0, -1));
+btnAbajo.addEventListener("click", () => cambiarDireccion(0, 1));
+btnIzquierda.addEventListener("click", () => cambiarDireccion(-1, 0));
+btnDerecha.addEventListener("click", () => cambiarDireccion(1, 0));
 
 function actualizar() {
   if (juegoTerminado) return;
@@ -108,23 +148,42 @@ function dibujar() {
     tamCelda - 2,
     tamCelda - 2
   );
-
-  if (juegoTerminado) {
-    ctx.fillStyle = "#ffffff";
-    ctx.font = "20px Arial";
-    ctx.textAlign = "center";
-    ctx.fillText("Perdiste - Presiona F5", canvas.width / 2, canvas.height / 2);
-  }
 }
 
 function terminarJuego() {
   juegoTerminado = true;
+  puntajeFinalEl.textContent = puntaje;
+  pantallaGameOver.classList.remove("oculto");
 }
 
 function bucleDelJuego() {
   actualizar();
   dibujar();
-  setTimeout(bucleDelJuego, velocidad);
+  // Deja de programar la próxima vuelta apenas termina el juego
+  if (!juegoTerminado) {
+    setTimeout(bucleDelJuego, velocidad);
+  }
 }
 
-bucleDelJuego();
+// Cuando se aprieta "Jugar", arranca el estado del juego, se esconde el menú y comienza el bucle
+botonJugar.addEventListener("click", () => {
+  iniciarEstadoDelJuego();
+  menu.classList.add("oculto");
+  pantallaJuego.classList.remove("oculto");
+  canvas.focus();
+  bucleDelJuego();
+});
+
+// Reiniciar: vuelve a arrancar el juego sin salir de la pantalla de juego
+botonReiniciar.addEventListener("click", () => {
+  iniciarEstadoDelJuego();
+  pantallaGameOver.classList.add("oculto");
+  bucleDelJuego();
+});
+
+// Menú: vuelve a la pantalla de inicio
+botonMenu.addEventListener("click", () => {
+  pantallaGameOver.classList.add("oculto");
+  pantallaJuego.classList.add("oculto");
+  menu.classList.remove("oculto");
+});

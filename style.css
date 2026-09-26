@@ -10,6 +10,36 @@ h1 {
   margin-bottom: 10px;
 }
 
+/* Oculta cualquier elemento que tenga esta clase */
+.oculto {
+  display: none;
+}
+
+/* Pantalla de menú */
+#menu {
+  max-width: 400px;
+  margin: 60px auto 0;
+}
+
+#menu p {
+  color: #cccccc;
+  margin-bottom: 25px;
+}
+
+#botonJugar {
+  background-color: #4caf50;
+  color: #ffffff;
+  border: none;
+  padding: 12px 30px;
+  font-size: 18px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+#botonJugar:hover {
+  background-color: #3d8b40;
+}
+
 canvas {
   background-color: #000000;
   border: 4px solid #4caf50;
@@ -20,4 +50,72 @@ canvas {
 p {
   font-size: 18px;
   margin-top: 15px;
+}
+
+/* Controles táctiles */
+#controlesTactiles {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.filaControles {
+  display: flex;
+  gap: 8px;
+}
+
+.botonDireccion {
+  width: 60px;
+  height: 60px;
+  font-size: 24px;
+  background-color: #333333;
+  color: #ffffff;
+  border: 2px solid #4caf50;
+  border-radius: 8px;
+  cursor: pointer;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+.botonDireccion:active {
+  background-color: #4caf50;
+}
+
+/* Pantalla de fin de juego */
+#pantallaGameOver {
+  margin-top: 20px;
+}
+
+#pantallaGameOver p {
+  color: #e53935;
+  font-weight: bold;
+}
+
+#botonReiniciar,
+#botonMenu {
+  color: #ffffff;
+  border: none;
+  padding: 10px 24px;
+  font-size: 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin: 0 6px;
+}
+
+#botonReiniciar {
+  background-color: #4caf50;
+}
+
+#botonReiniciar:hover {
+  background-color: #3d8b40;
+}
+
+#botonMenu {
+  background-color: #555555;
+}
+
+#botonMenu:hover {
+  background-color: #3f3f3f;
 }
